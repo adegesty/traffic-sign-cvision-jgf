@@ -1,0 +1,30 @@
+Hi all,
+
+the project you propose sounds nice and with
+some performance evaluation suitable for a
+group of three people. You are free to use the
+programming language you want.
+
+It's probably a good idea to divide the
+whole project into smaller parts like:
+
+Detect traffic sign candidates:
+  Color-Segmentation/Extraction of sign-candidates
+  (With 3 people you could explore 2-3 different Segmentation methods and
+   determine which seems to be more suitable for the task)
+Rough sign classification:
+Shape-analysis of the candidates
+  -> maybe focus to distinguish 2-3 shapes? i.e. round/ triangular/ rectangular
+Performance evaluation:
+Explore a few different shape descriptors Do tests on real-world images and evaluate when it works well and
+when and why the proposed method fails sometimes.
+
+This already seems have a project-size worth of up to 30 points ...
+but you are free to analyze the signs further to figure out
+what number might be on a round (speed limit) sign.
+
+best regards
+
+
+    Christian
+
