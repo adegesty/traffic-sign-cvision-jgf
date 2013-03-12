@@ -14,18 +14,21 @@ using namespace std;
 
 int main(int argc, char** argv){
 
-/*	if( argc != 2){
-		cout <<" Usage: display_image ImageToLoadAndDisplay" << endl;
-		return -1;
-	}
-*/
-
 
 
 	Mat image;
-	image = imread("../../skilt_1.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
 
-	if(!image.data){                              // Check for invalid input
+	
+	//Read image
+	if(argc < 2){
+		image = imread("../../example_images/skilt_1.jpg", CV_LOAD_IMAGE_COLOR);
+	}
+	else{
+		image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+	}
+
+	//Check for valid input
+	if(!image.data){ 
 		cout <<  "Could not open or find the image" << endl;
 		return -1;
 	}
