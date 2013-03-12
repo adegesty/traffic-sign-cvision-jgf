@@ -1,5 +1,5 @@
 /*
- * main.cpp
+ * thresholding.cpp
  *
  *  Created on: Mar 4, 2013
  *      Author: fredrik
