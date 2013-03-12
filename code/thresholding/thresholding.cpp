@@ -23,10 +23,10 @@ int main(int argc, char** argv){
 
 
 	Mat image;
-	image = imread("skilt.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
+	image = imread("../../skilt_1.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
 
 	if(!image.data){                              // Check for invalid input
-		cout <<  "Could not open or find the image" << std::endl;
+		cout <<  "Could not open or find the image" << endl;
 		return -1;
 	}
 
@@ -50,21 +50,18 @@ int main(int argc, char** argv){
 
 	Mat pureRed = red - grey;
 
-	//namedWindow("Pure red image", CV_WINDOW_AUTOSIZE);
-	//imshow("Pure red image", pureRed);
+	namedWindow("Pure red image", CV_WINDOW_AUTOSIZE);
+	imshow("Pure red image", pureRed);
 
 	Mat thresholded;
 
 	//adaptiveThreshold(pureRed, thresholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, (pureRed.cols % 2 ? pureRed.cols : pureRed.cols - 1), -25);
 	//threshold(pureRed, thresholded, 50, 255, THRESH_BINARY);
 	double thresholdValue = mean(pureRed)[0]*4;
-	threshold(pureRed, thresholded, thresholdValue, 1, THRESH_BINARY);
+	threshold(pureRed, thresholded, thresholdValue, 255, THRESH_BINARY);
 
-	Mat masked(image.rows, image.cols, CV_8UC3);
-
-
-	namedWindow("Masked", CV_WINDOW_AUTOSIZE);
-	imshow("Masked", masked);
+	namedWindow("Thresholded", CV_WINDOW_AUTOSIZE);
+	imshow("Thresholded", thresholded);
 
 
 
