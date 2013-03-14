@@ -59,8 +59,12 @@ int main(int argc, char** argv){
 	Mat thresholded;
 
 	//adaptiveThreshold(pureRed, thresholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, (pureRed.cols % 2 ? pureRed.cols : pureRed.cols - 1), -25);
-	//threshold(pureRed, thresholded, 50, 255, THRESH_BINARY);
-	double thresholdValue = mean(pureRed)[0]*4;
+	double thresholdValue;	
+	//thresholdValue = mean(pureRed)[0]*4;
+	minMaxLoc(pureRed, NULL, &thresholdValue);
+
+	thresholdValue -= 30;
+
 	threshold(pureRed, thresholded, thresholdValue, 255, THRESH_BINARY);
 
 	namedWindow("Thresholded", CV_WINDOW_AUTOSIZE);
