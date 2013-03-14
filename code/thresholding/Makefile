@@ -1,5 +1,5 @@
 # Compiler flags go here.
-CFLAGS = -std=c99 -g -Wall -I/usr/local/include -MMD
+CFLAGS = -g -Wall -MMD -I/usr/local/include/opencv
 
 # Linker flags go here.
 LDFLAGS = -g -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
@@ -20,18 +20,22 @@ all: $(TARGET)
 DEPS = $(shell find -name "*.d")
 
 # Define all object files.
-OBJECTS = $(SOURCES:.c=.o)
+OBJECTS = $(SOURCES:.cpp=.o)
 
 # rule to link the program
 $(TARGET): $(OBJECTS)
-	gcc $(LDFLAGS) -o $@ $^
+	g++ -o $@ $^ $(LDFLAGS) 
 
 # Compile: create object files from C source files.
-%.o : %.c
-	gcc $(CFLAGS) -c -o $@ $< 
+%.o : %.cpp
+	g++ $(CFLAGS) -c -o $@ $< 
 
 # Include dependencies, if any.
 -include $(DEPS)
+
+#Print variables
+echo:
+	echo "TARGET: $(TARGET) OBJECTS: $(OBJECTS) DEPS: $(DEPS)"
 
 # rule for cleaning re-compilable files.
 clean:
@@ -39,5 +43,5 @@ clean:
 
 rebuild: clean all
 
-.PHONY: all rebuild clean
+.PHONY: all rebuild clean echo
 
