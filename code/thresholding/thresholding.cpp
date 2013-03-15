@@ -17,8 +17,7 @@ int main(int argc, char** argv){
 
 
 	Mat image;
-
-	
+	cout << "image depth: " << image.depth() << endl;
 	//Read image
 	if(argc < 2){
 		image = imread("../../example_images/skilt_1.jpg", CV_LOAD_IMAGE_COLOR);
@@ -27,19 +26,21 @@ int main(int argc, char** argv){
 		image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
 	}
 
+	
 	//Check for valid input
 	if(!image.data){ 
 		cout <<  "Could not open or find the image" << endl;
 		return -1;
 	}
 
+	cout << "image depth: " << image.depth() << endl;
 	Mat red(image.rows, image.cols, CV_8UC1);
 
 	int fromTo[] = {2,0};
 
 	mixChannels(&image, 1, &red, 1, fromTo, 1);
 
-	Mat grey;
+	Mat grey(image.rows, image.cols, CV_8UC1);
 	cvtColor(image, grey, CV_BGR2GRAY);
 
 	namedWindow("Original image", CV_WINDOW_AUTOSIZE);
@@ -51,19 +52,20 @@ int main(int argc, char** argv){
 	//namedWindow("Grey image", CV_WINDOW_AUTOSIZE);
 	//imshow("Grey image", grey);
 
-	Mat pureRed = red - grey;
+	Mat pureRed(image.rows, image.cols, CV_8UC1);
+	pureRed = red - grey;
 
 	namedWindow("Pure red image", CV_WINDOW_AUTOSIZE);
 	imshow("Pure red image", pureRed);
 
-	Mat thresholded;
+	Mat thresholded(image.rows, image.cols, CV_8UC1);
 
 	//adaptiveThreshold(pureRed, thresholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, (pureRed.cols % 2 ? pureRed.cols : pureRed.cols - 1), -25);
 	double thresholdValue;	
 	//thresholdValue = mean(pureRed)[0]*4;
 	minMaxLoc(pureRed, NULL, &thresholdValue);
-
-	thresholdValue -= 30;
+	cout << thresholdValue << endl;
+	thresholdValue *= 0.65;
 
 	threshold(pureRed, thresholded, thresholdValue, 255, THRESH_BINARY);
 
