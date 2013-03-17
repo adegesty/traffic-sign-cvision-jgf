@@ -17,7 +17,6 @@ int main(int argc, char** argv){
 
 
 	Mat image;
-	cout << "image depth: " << image.depth() << endl;
 	//Read image
 	if(argc < 2){
 		image = imread("../../example_images/skilt_1.jpg", CV_LOAD_IMAGE_COLOR);
@@ -26,14 +25,12 @@ int main(int argc, char** argv){
 		image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
 	}
 
-	
 	//Check for valid input
 	if(!image.data){ 
 		cout <<  "Could not open or find the image" << endl;
 		return -1;
 	}
 
-	cout << "image depth: " << image.depth() << endl;
 	Mat red(image.rows, image.cols, CV_8UC1);
 
 	int fromTo[] = {2,0};
@@ -71,8 +68,6 @@ int main(int argc, char** argv){
 
 	namedWindow("Thresholded", CV_WINDOW_AUTOSIZE);
 	imshow("Thresholded", thresholded);
-
-
 
 	waitKey(0);
 
