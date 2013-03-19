@@ -15,27 +15,122 @@ Histogram::Histogram(const Mat& _src, int _hist_size, int _hist_width, int _hist
 	hist_height = _hist_height;
 	bin_width = cvRound((double) hist_width/hist_size);
 	smoothing_filter_size = _smoothing_filter_size;			  
-	if(colors & BLUE){
-		blue = true;
-	}
+	blue = colors & BLUE;
+	green = colors & GREEN;
+	red = colors & RED;
+	generate_histogram();			  
 
-	if(colors & GREEN){
-		green = true;
-	}
-	
-	if(colors & RED){
-		red = true;
-	}
-			  
 }
 
 void Histogram::draw_histogram(Mat& dst)
 {
-
+	Mat output (hist_height, hist_width, CV_8UC3, Scalar(0,0,0));
+	if(blue)
+	{
+		for(int i = 1; i < hist_size; i++){
+			line(output, Point(bin_width*(i-1), output.rows - cvRound(b_hist.at<float>(i-1))),
+		  			  Point(bin_width*i, output.rows - cvRound(b_hist.at<float>(i))),
+		  			  Scalar(255,0,0), 2,8,0);
+			}
+	}	
+	if(green){
+		for(int i = 1; i < hist_size; i++){
+			line(output, Point(bin_width*(i-1), output.rows - cvRound(g_hist.at<float>(i-1))),
+		  			  Point(bin_width*i, output.rows - cvRound(g_hist.at<float>(i))),
+		  			  Scalar(0,255,0), 2,8,0);
+		}
+	}
+	if(red)
+	{
+		for(int i = 1; i < hist_size; i++){
+			line(output, Point(bin_width*(i-1), output.rows - cvRound(r_hist.at<float>(i-1))),
+		  			  Point(bin_width*i, output.rows - cvRound(r_hist.at<float>(i))),
+		  			  Scalar(0,0,255), 2,8,0);
+		}
+	}		
+	dst = output.clone();
 }
 
-int Histogram::get_peak(int color, int& peak, int& lower_bound, int& upper_bound, int start_below)
+void Histogram::get_peaks(vector<Peak> *peaks, int color, unsigned int n_peaks = 5)
 {
+	Mat hist;
+	switch(color){
+		case BLUE:
+			if(!blue){
+				return;
+			}
+			hist = b_hist;
+			break;
+		case GREEN:
+			if(!green){
+				return;
+			}
+			hist = g_hist;
+			break;
+		case RED:
+			if(!red){
+				return;
+			}
+			hist = r_hist;
+			break;
+		default:
+			return;
+	}
+
+	enum {SEARCH_BOTTOM, SEARCH_TOP} search_state;
+	Peak *current_peak;
+	if(hist.at<float>(0) <= hist.at<float>(1)){
+		current_peak = new Peak;
+		current_peak->lower_index = 0;
+		search_state = SEARCH_TOP;
+	}
+	else{
+		current_peak = new Peak;
+		current_peak->lower_index = 0;
+		current_peak->peak_val = hist.at<float>(0);
+		search_state = SEARCH_BOTTOM;
+	}
+	
+	for (int i = 1; i<hist.rows-1; i++){
+		switch(search_state){
+			case SEARCH_BOTTOM:
+				if(hist.at<float>(i-1) > hist.at<float>(i) && hist.at<float>(i+1) > hist.at<float>(i))
+				{
+					current_peak->upper_index = i;
+					peaks->push_back(*current_peak);
+					delete current_peak;
+					current_peak = new Peak;
+					current_peak->lower_index = i;
+					search_state = SEARCH_TOP;
+				}
+				break;
+			case SEARCH_TOP:	
+				if(hist.at<float>(i-1) < hist.at<float>(i) && hist.at<float>(i+1) < hist.at<float>(i))
+				{
+					current_peak->peak_val = hist.at<float>(i);
+					search_state = SEARCH_BOTTOM;
+				}
+		}
+	}
+
+	if(search_state == SEARCH_BOTTOM)
+	{
+		current_peak->upper_index = hist.rows;
+		peaks->push_back(*current_peak);
+	}
+	else
+	{
+		current_peak->peak_val = hist.at<float>(hist.rows);
+		current_peak->upper_index = hist.rows;
+		peaks->push_back(*current_peak);
+	}
+	delete current_peak;	
+
+	sort(peaks->begin(), peaks->end());
+	
+	while(peaks->size() > n_peaks){
+		peaks->pop_back();
+	}
 
 }
 
@@ -52,32 +147,66 @@ void Histogram::generate_histogram()
 	
 	if(blue){
 		calcHist(&bgr_planes[0], 1, 0, Mat(), b_hist, 1, &hist_size, &hist_range, true, false);
+		normalize(b_hist, b_hist, 0, hist_size, NORM_MINMAX, -1, Mat());
 	}
 	if(green){
 		calcHist(&bgr_planes[1], 1, 0, Mat(), g_hist, 1, &hist_size, &hist_range, true, false);
+		normalize(g_hist, g_hist, 0, hist_size, NORM_MINMAX, -1, Mat());
 	}
 	if(red){
 		calcHist(&bgr_planes[2], 1, 0, Mat(), r_hist, 1, &hist_size, &hist_range, true, false);
+		normalize(r_hist, r_hist, 0, hist_size, NORM_MINMAX, -1, Mat());
 	}
-
+	
+	smooth_histogram();
 }
 
-void Histogram::smooth_histogram(Mat& hist)
+void Histogram::smooth_histogram()
 {
 	if(smoothing_filter_size == 0){
 		return;
 	}
 	float partSum = 0;
+	if(blue)
+	{
+		for(int i = 0; i < b_hist.rows; i++){
+			//Motherfucking grenseverdier
+			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
+			int j_upper = (i <= b_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : b_hist.rows-i);
 
-	for(int i = 0; i < hist.rows; i++){
-		//Motherfucking grenseverdier
-		int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
-		int j_upper = (i <= hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : hist.rows-i);
-
-		for(int j = j_lower; j <= j_upper; j++){
-			partSum += hist.at<float>(i + j);
+			for(int j = j_lower; j <= j_upper; j++){
+				partSum += b_hist.at<float>(i + j);
+			}
+			b_hist.at<float>(i) = partSum/smoothing_filter_size;
+			partSum = 0;
 		}
-		hist.at<float>(i) = partSum/smoothing_filter_size;
-		partSum = 0;
+	}
+	if(green)
+	{
+		for(int i = 0; i < g_hist.rows; i++){
+			//Motherfucking grenseverdier
+			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
+			int j_upper = (i <= g_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : g_hist.rows-i);
+
+			for(int j = j_lower; j <= j_upper; j++){
+				partSum += g_hist.at<float>(i + j);
+			}
+			g_hist.at<float>(i) = partSum/smoothing_filter_size;
+			partSum = 0;
+		}
+	}
+	if(red)
+	{
+		for(int i = 0; i < r_hist.rows; i++){
+			//Motherfucking grenseverdier
+			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
+			int j_upper = (i <= r_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : r_hist.rows-i);
+
+			for(int j = j_lower; j <= j_upper; j++){
+				partSum += r_hist.at<float>(i + j);
+			}
+			r_hist.at<float>(i) = partSum/smoothing_filter_size;
+			partSum = 0;
+		}
 	}
 }
