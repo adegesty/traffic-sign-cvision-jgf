@@ -30,43 +30,33 @@ int main(int argc, char** argv){
 		cout <<  "Could not open or find the image" << endl;
 		return -1;
 	}
-
+	
+	//Get the red channel of the image
 	Mat red(image.rows, image.cols, CV_8UC1);
-
 	int fromTo[] = {2,0};
-
 	mixChannels(&image, 1, &red, 1, fromTo, 1);
 
+	//Get the grayscale of the image
 	Mat grey(image.rows, image.cols, CV_8UC1);
 	cvtColor(image, grey, CV_BGR2GRAY);
 
-	namedWindow("Original image", CV_WINDOW_AUTOSIZE);
-	imshow("Original image", image);
-
-	//namedWindow("Red image", CV_WINDOW_AUTOSIZE);
-	//imshow("Red image", red);
-
-	//namedWindow("Grey image", CV_WINDOW_AUTOSIZE);
-	//imshow("Grey image", grey);
-
+	//Remove other colors than real red
 	Mat pureRed(image.rows, image.cols, CV_8UC1);
 	pureRed = red - grey;
 
-	namedWindow("Pure red image", CV_WINDOW_AUTOSIZE);
-	imshow("Pure red image", pureRed);
-
+	//Do the thresholding
 	Mat thresholded(image.rows, image.cols, CV_8UC1);
 
 	//adaptiveThreshold(pureRed, thresholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, (pureRed.cols % 2 ? pureRed.cols : pureRed.cols - 1), -25);
 	double thresholdValue;	
 	//thresholdValue = mean(pureRed)[0]*4;
 	minMaxLoc(pureRed, NULL, &thresholdValue);
-	cout << thresholdValue << endl;
 	thresholdValue *= 0.65;
 
 	threshold(pureRed, thresholded, thresholdValue, 255, THRESH_BINARY);
 
-	namedWindow("Thresholded", CV_WINDOW_AUTOSIZE);
+	imshow("Original image", image);
+	imshow("Pure red image", pureRed);
 	imshow("Thresholded", thresholded);
 
 	waitKey(0);
