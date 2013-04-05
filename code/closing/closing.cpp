@@ -35,16 +35,16 @@ int main(int argc, char** argv){
 	Mat temp1;
 	Mat finished_image;
 
-	Mat element = getStructuringElement(MORPH_ELLIPSE,Size(5,5));
+	Mat element = getStructuringElement(MORPH_ELLIPSE,Size(6,6));
 
 	//close
 	dilate(image,dilation_image,element,Point(-1,-1),3);
 	erode(dilation_image,closing_image,element,Point(-1,-1),3);
 	//open
-	erode(closing_image,temp1,element,Point(-1,-1),4);
-	dilate(temp1,finished_image,element,Point(-1,-1),4);
+	erode(closing_image,temp1,element,Point(-1,-1),3);
+	dilate(temp1,finished_image,element,Point(-1,-1),3);
 
-	imshow("dialted image",closing_image);
+	imshow("closed image",closing_image);
 	imshow("test av erosion",finished_image);
 	
 	waitKey(0);	

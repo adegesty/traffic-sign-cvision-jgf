@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include <iostream>
+#include <thresholding.h>
 
 using namespace cv;
 using namespace std;
@@ -62,4 +63,23 @@ int main(int argc, char** argv){
 	waitKey(0);
 
 	return 0;
+}
+
+void shapeSmoothing(const Mat& src, Mat& dest){
+
+	Mat dilation_image;	
+	Mat closing_image;
+	Mat temp1;
+	Mat finished_image;
+
+	Mat element = getStructuringElement(MORPH_ELLIPSE,Size(6,6));
+
+	//close
+	dilate(src,dilation_image,element,Point(-1,-1),3);
+	erode(dilation_image,closing_image,element,Point(-1,-1),3);
+	//open
+	erode(closing_image,temp1,element,Point(-1,-1),3);
+	dilate(temp1,finished_image,element,Point(-1,-1),3);
+
+	dest = temp1.clone();
 }
