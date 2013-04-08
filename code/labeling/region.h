@@ -6,10 +6,11 @@ class Region {
 
 	public:
 
-		Region();
+		Region(int _label);
 		
 		void combine_with(Region other_region);
 
+		int label;
 
 		int y_upper;
 		int y_lower;

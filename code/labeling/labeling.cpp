@@ -17,6 +17,7 @@ Finn en god måte å legge inn combine på.
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include <iostream>
+#include <vector>
 #include "region.h"
 
 using namespace cv;
@@ -43,15 +44,16 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	int region_of_pixel[image.rows][image.cols];
+	//Array to hold which region each pixel belongs to 0 means no region
+	Region* region_of_pixel[image.rows][image.cols];
 
 	for(int i = 0; i < image.rows; i++){
 		for(int j = 0; j < image.cols; j++){
-			region_of_pixel[i][j] = 0;
+			region_of_pixel[i][j] = NULL;
 		}
 	}
-	int next_region_number = 1;
-	Vector<Region> regions;
+	int next_region_number = 0;
+	vector<Region*> regions;
 
 	for(int i = 0; i < image.rows; i++){
 		for(int j = 0; j < image.cols; j++){
@@ -64,28 +66,36 @@ int main(int argc, char** argv){
 							break;
 						}
 						if(image.at<char>(k,l) != 0){
-							if(region_of_pixel[i][j] == 0){
+							if(region_of_pixel[i][j] == NULL){
 								region_of_pixel[i][j] = region_of_pixel[k][l];
 							}
 							else{
 								//combine regions
-								regions[region_of_pixel[i][j]].combine_with(regions[region_of_pixel[k][j]]);
+								int region_to_delete = region_of_pixel[k][l]->label;
+								region_of_pixel[k][l] = region_of_pixel[i][j];
+								for(unsigned int m = 0; m < regions.size(); m++){
+									if(regions[m]->label == region_to_delete){
+										regions.erase(regions.begin() + m);
+									}
+								}
 							}
 						}
 					}
 				}
-				if(region_of_pixel[i][j] == 0){
-					region_of_pixel[i][j] = next_region_number++;
-					Region new_region;
-					new_region.y_upper = i;
-					new_region.y_lower = i;
-					new_region.x_leftmost = j;
-					new_region.x_rightmost = j;
-					regions.add(new_region);
+				if(region_of_pixel[i][j] == NULL){
+					region_of_pixel[i][j] = new Region(next_region_number++);
+	
+					region_of_pixel[i][j]->y_upper = i;
+					region_of_pixel[i][j]->y_lower = i;
+					region_of_pixel[i][j]->x_leftmost = j;
+					region_of_pixel[i][j]->x_rightmost = j;
+					regions.push_back(region_of_pixel[i][j]);
 				}
 			}
 		}
 	}
+	
+	cout << regions.size() << endl;
 
 	return 0;
 }
