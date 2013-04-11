@@ -1,6 +1,15 @@
 #ifndef REGION_H
 #define REGION_H
 
+#include <vector>
+class Pixel{
+
+	public: 
+		Pixel(int _x, int _y) {x = _x; y = _y;}
+		int x;
+		int y;
+
+};
 
 class Region {
 
@@ -12,6 +21,7 @@ class Region {
 
 		int label;
 
+		std::vector<Pixel> pixels;
 		int y_upper;
 		int y_lower;
 		int x_leftmost;
