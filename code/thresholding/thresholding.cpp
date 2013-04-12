@@ -86,5 +86,5 @@ void shapeSmoothing(const Mat& src, Mat& dest){
 	erode(closing_image,temp1,element,Point(-1,-1),3);
 	dilate(temp1,finished_image,element,Point(-1,-1),3);
 
-	dest = temp1.clone();
+	dest = finished_image.clone();
 }
