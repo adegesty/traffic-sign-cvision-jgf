@@ -5,6 +5,7 @@
 
 using namespace cv;
 
+void get_pure_color(const Mat &src, Mat &dst);
 void shapeSmoothing(const Mat& src, Mat& dest);
 
 #endif

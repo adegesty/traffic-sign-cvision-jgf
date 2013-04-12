@@ -8,7 +8,7 @@ LDFLAGS = -g -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
 SOURCES = $(shell find -name "*.cpp")
 
 # Program executable file name.
-TARGET = labeling
+TARGET = regiondemo
 
 # Default rule, to compile everything.
 all: $(TARGET)
