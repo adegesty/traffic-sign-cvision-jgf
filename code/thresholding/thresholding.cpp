@@ -8,7 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv/highgui.h>
 #include <iostream>
-#include <thresholding.h>
+#include "thresholding.h"
 
 using namespace cv;
 using namespace std;
@@ -56,9 +56,14 @@ int main(int argc, char** argv){
 
 	threshold(pureRed, thresholded, thresholdValue, 255, THRESH_BINARY);
 
+	Mat smoothImage(image.rows, image.cols, CV_8UC1);
+
+	shapeSmoothing(thresholded,smoothImage);
+
 	imshow("Original image", image);
 	imshow("Pure red image", pureRed);
 	imshow("Thresholded", thresholded);
+	imshow("smoothed image", smoothImage);
 
 	waitKey(0);
 
