@@ -1,7 +1,11 @@
 #ifndef REGION_H
 #define REGION_H
 
+#include <opencv2/opencv.hpp>
 #include <vector>
+using namespace cv;
+using namespace std;
+
 class Pixel{
 
 	public: 
@@ -16,12 +20,12 @@ class Region {
 	public:
 
 		Region(int _label);
-		
-		void combine_with(Region other_region);
+		void print(Mat& dest);	
+		void combine_with(Region *other_region);
 
 		int label;
 
-		std::vector<Pixel> pixels;
+		vector<Pixel> pixels;
 		int y_upper;
 		int y_lower;
 		int x_leftmost;
@@ -29,5 +33,6 @@ class Region {
 
 };
 
+vector<Region> find_regions(const Mat& image);
 
 #endif

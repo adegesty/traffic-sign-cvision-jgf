@@ -1,67 +1,23 @@
-/*
- * thresholding.cpp
- *
- *  Created on: Apr 5 2013
- *      Author: fredrik
- */
-
-
-/*
-
-Finn en god måte å legge inn combine på.
-
-*/
-
-
-
 #include <opencv2/opencv.hpp>
-#include <opencv/highgui.h>
-#include <iostream>
-#include <vector>
 #include "region.h"
-
 using namespace cv;
-using namespace std;
+
+Region::Region(int _label){
+	label = _label;
+}
 
 
 
 
-int main(int argc, char** argv){
+void Region::print(Mat& dest){
+	line(dest, Point(x_leftmost, y_upper), Point(x_rightmost, y_upper), Scalar(255,255,255), 1, 8, 0);
+	line(dest, Point(x_leftmost, y_lower), Point(x_rightmost, y_lower), Scalar(255,255,255), 1, 8, 0);
+	line(dest, Point(x_leftmost, y_upper), Point(x_leftmost, y_lower), Scalar(255,255,255), 1, 8, 0);
+	line(dest, Point(x_rightmost, y_upper), Point(x_rightmost, y_lower), Scalar(255,255,255), 1, 8, 0);
+}
 
-
-
-	Mat image;
-
-	//Read image
-	if(argc < 2){
-		image = imread("../../example_images/shapes.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-	}
-	else{
-		image = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
-	}
-
-	//Check for valid input
-	if(!image.data){ 
-		cout <<  "Could not open or find the image" << endl;
-		return -1;
-	}
-
-	threshold(image, image, 128, 255, THRESH_BINARY);
-/*
-	Mat image(5,5, CV_8UC1, Scalar(0));
-	image.at<char>(1,1) = 255;
-	image.at<char>(1,2) = 255;
-	image.at<char>(1,3) = 255;
-	image.at<char>(2,3) = 255;
-	image.at<char>(3,3) = 255;
-	image.at<char>(3,2) = 255;
-	image.at<char>(3,1) = 255;
-
-imshow("hei",image);
-waitKey(0);
-*/
-
-	//Array to hold which region each pixel belongs to
+vector<Region> find_regions(const Mat& image){
+	//lookup table to hold which region each pixel belongs to
 	Region* region_of_pixel[image.rows][image.cols];
 
 	for(int i = 0; i < image.rows; i++){
@@ -89,7 +45,6 @@ waitKey(0);
 							//If current pixel is not in any region, add to the neighbour region
 							if(region_of_pixel[i][j] == NULL){
 								region_of_pixel[i][j] = region_of_pixel[k][l];
-								//cout << "adding pixel " << i << "," << j << " to region " << region_of_pixel[k][l]->label << endl;
 								region_of_pixel[k][l]->pixels.push_back(Pixel(j,i));
 								//Update region boundaries
 								if (i < region_of_pixel[i][j]->y_upper){
@@ -107,15 +62,17 @@ waitKey(0);
 							}
 							//If current pixel has already been added to a region other than the new neighbor region, combine them.
 							else if(region_of_pixel[i][j] != region_of_pixel[k][l]) {
-								//cout << "combining regions at " << i << "," << j << endl;
 								int region_to_delete;
 								for(unsigned int m = 0; m < regions.size(); m++){
 									if(regions[m]->label == region_of_pixel[k][l]->label){
 										region_to_delete = m;
 									}
 								}
-
+								
+								//Append neighbors pixel vector to this regions vector
 								region_of_pixel[i][j]->pixels.insert(region_of_pixel[i][j]->pixels.end(), region_of_pixel[k][l]->pixels.begin(), region_of_pixel[k][l]->pixels.end());
+
+								//update lookup table
 								for(unsigned int m = 0; m < region_of_pixel[k][l]->pixels.size(); m++){
 									Pixel current_pixel = region_of_pixel[k][l]->pixels[m];
 									region_of_pixel[current_pixel.y][current_pixel.x] = region_of_pixel[i][j];
@@ -132,12 +89,9 @@ waitKey(0);
 									if (current_pixel.x > region_of_pixel[i][j]->x_rightmost){
 										region_of_pixel[i][j]->x_rightmost = current_pixel.x;
 									}
-								}//TODO update region boundaries
-								//int region_to_delete = region_of_pixel[k][l]->label;
-								//cout << "deleting region " << region_of_pixel[k][l]->label << endl;
-								//region_of_pixel[k][l] = region_of_pixel[i][j];
-								regions.erase(regions.begin() + region_to_delete);
+								}
 								
+								regions.erase(regions.begin() + region_to_delete);	
 							}
 						}
 					}
@@ -146,7 +100,6 @@ waitKey(0);
 				if(region_of_pixel[i][j] == NULL){
 					region_of_pixel[i][j] = new Region(next_region_number++);
 					region_of_pixel[i][j]->pixels.push_back(Pixel(j,i));
-					//cout << "making new region at " << i << "," << j << " with label " << region_of_pixel[i][j]->label <<  endl;	
 					region_of_pixel[i][j]->y_upper = i;
 					region_of_pixel[i][j]->y_lower = i;
 					region_of_pixel[i][j]->x_leftmost = j;
@@ -157,16 +110,15 @@ waitKey(0);
 		}
 	}
 	
-	cout << "number of regions: " << regions.size() << endl;
-	
-	for(unsigned int i = 0; i < regions.size(); i++){
-		line(image, Point(regions[i]->x_leftmost, regions[i]->y_upper), Point(regions[i]->x_rightmost, regions[i]->y_upper), Scalar(255,255,255), 1, 8, 0);
-		line(image, Point(regions[i]->x_leftmost, regions[i]->y_lower), Point(regions[i]->x_rightmost, regions[i]->y_lower), Scalar(255,255,255), 1, 8, 0);
-		line(image, Point(regions[i]->x_leftmost, regions[i]->y_upper), Point(regions[i]->x_leftmost, regions[i]->y_lower), Scalar(255,255,255), 1, 8, 0);
-		line(image, Point(regions[i]->x_rightmost, regions[i]->y_upper), Point(regions[i]->x_rightmost, regions[i]->y_lower), Scalar(255,255,255), 1, 8, 0);
-	}
-	imshow("hei", image);
-	waitKey(0);
+	vector<Region> output;
 
-	return 0;
+	for(unsigned int i = 0; i < regions.size(); i++){
+	
+		Region new_region = *(regions[i]);
+		new_region.label = i;
+		output.push_back(new_region);
+
+	}
+	
+	return output;
 }
