@@ -1,4 +1,5 @@
 #include <opencv2/opencv.hpp>
+#include <cmath>
 #include "region.h"
 using namespace cv;
 

@@ -5,7 +5,14 @@
 
 using namespace cv;
 
-void get_pure_color(const Mat &src, Mat &dst);
+enum color
+{
+	BLUE = 1,
+	GREEN = 2,
+	RED = 4
+};
+
+void get_pure_color(const Mat &src, Mat &dst, int color);
 void shapeSmoothing(const Mat& src, Mat& dest);
 
 #endif
