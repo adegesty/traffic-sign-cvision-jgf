@@ -52,7 +52,7 @@ void get_covariance_eig_val(const Mat& src, double *eig_val_1, double *eig_val_2
 	double first_term_of_eig_func = (mu_20_bar+mu_02_bar)/2;
 	double second_term_of_eig_func = sqrt(pow((mu_20_bar - mu_02_bar)/2,2)+pow(mu_11_bar,2));
 	
-	*eig_val_1 = first_term_of_eig_func + second_term_of_eig_func;
-	*eig_val_2 = first_term_of_eig_func - second_term_of_eig_func;
+	*eig_val_1 = (first_term_of_eig_func + second_term_of_eig_func);
+	*eig_val_2 = (first_term_of_eig_func - second_term_of_eig_func);
 }
 
