@@ -5,7 +5,7 @@ CFLAGS = -g -Wall -MMD -I/usr/local/include/opencv
 LDFLAGS = -g -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui -lm
 
 # list of sources
-SOURCES = $(shell find -name "*.cpp") ../region/region.cpp
+SOURCES = $(shell find -name "*.cpp") ../region/region.cpp ../thresholding/thresholding.cpp
 
 # Program executable file name.
 TARGET = momentdemo

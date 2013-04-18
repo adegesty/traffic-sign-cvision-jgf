@@ -57,7 +57,7 @@ int main(int argc, char** argv){
 	}
 	else{//Read a given image file
 		Mat image;
-		image = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
+		image = imread(argv[1], CV_LOAD_IMAGE_COLOR);
 		//Check for valid input
 		if(!image.data){ 
 			cout <<  "Could not open or find the image" << endl;

@@ -56,3 +56,37 @@ void get_covariance_eig_val(const Mat& src, double *eig_val_1, double *eig_val_2
 	*eig_val_2 = (first_term_of_eig_func - second_term_of_eig_func);
 }
 
+double get_invariance(const Mat& src){
+	
+	double mu_00 = get_central_moment(src, 0,0);
+	double mu_11 = get_central_moment(src, 1,1);
+	double mu_20 = get_central_moment(src, 2,0);
+	double mu_02 = get_central_moment(src, 0,2);
+
+	return ((mu_20*mu_02-pow(mu_11,2))/pow(mu_00,4));
+
+}
+
+
+double get_ellipticity(double invariance){
+	double perfect_ellipse_invariance = 0.00633257397;
+	
+	if(invariance <= perfect_ellipse_invariance){
+		return (1/perfect_ellipse_invariance)*invariance;
+	}
+
+	return (perfect_ellipse_invariance)*(1/invariance);
+}
+double get_rectangularity(double invariance){
+
+}
+double get_triangularity(double invariance){
+	
+	double perfect_triangle_invariance = 1.0/108.0;
+	
+	if(invariance <= perfect_triangle_invariance){
+		return (1/perfect_triangle_invariance)*invariance;
+	}
+
+	return (perfect_triangle_invariance)*(1/invariance);
+}
