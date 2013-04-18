@@ -33,10 +33,11 @@ int main(int argc, char** argv){
 		return -1;
 	}
 	
-	get_pure_color(image, image, BLUE);
+	get_pure_color(image, image, RED);
 
 	imshow("Thresholing demo", image);
 
+	
 	waitKey(0);
 
 	return 0;

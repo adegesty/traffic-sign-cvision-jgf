@@ -54,9 +54,10 @@ void get_pure_color(const Mat &src, Mat &dst, int color){
 
 	Mat smoothImage(src.rows, src.cols, CV_8UC1);
 
-	shapeSmoothing(thresholded,smoothImage);
+	//shapeSmoothing(thresholded,smoothImage);
+//imwrite("../../example_images/images_circles/thresholded3.jpg",thresholded);
 
-	dst =  smoothImage.clone();
+	dst =  thresholded.clone();
 }
 
 
@@ -70,11 +71,11 @@ void shapeSmoothing(const Mat& src, Mat& dest){
 	Mat element = getStructuringElement(MORPH_ELLIPSE,Size(6,6));
 
 	//close
-	dilate(src,dilation_image,element,Point(-1,-1),3);
-	erode(dilation_image,closing_image,element,Point(-1,-1),3);
+	dilate(src,dilation_image,element,Point(-1,-1),1);
+	erode(dilation_image,closing_image,element,Point(-1,-1),1);
 	//open
-	erode(closing_image,temp1,element,Point(-1,-1),3);
-	dilate(temp1,finished_image,element,Point(-1,-1),3);
+	erode(closing_image,temp1,element,Point(-1,-1),1);
+	dilate(temp1,finished_image,element,Point(-1,-1),1);
 
 	dest = finished_image.clone();
 }
