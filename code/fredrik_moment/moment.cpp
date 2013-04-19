@@ -77,9 +77,10 @@ double get_ellipticity(double invariance){
 
 	return (perfect_ellipse_invariance)*(1/invariance);
 }
-double get_rectangularity(double invariance){
+/*double get_rectangularity(double invariance){
 
-}
+}*/
+
 double get_triangularity(double invariance){
 	
 	double perfect_triangle_invariance = 1.0/108.0;
@@ -89,4 +90,53 @@ double get_triangularity(double invariance){
 	}
 
 	return (perfect_triangle_invariance)*(1/invariance);
+}
+
+double get_scale_inv(const Mat& src){
+
+	double mu_00 = get_central_moment(src, 0,0);
+	double mu_20 = get_central_moment(src, 2,0);
+	double mu_02 = get_central_moment(src, 0,2);
+
+	return ((mu_20+mu_02)/pow(mu_00,2));
+}
+
+void fill_circle(const Mat& src, Mat& dst){
+	
+	enum fill_state {
+		NO_FILL,
+		EDGE_FOUND,
+		FILLING
+	};
+	fill_state state;
+	Mat output = src.clone();
+	Mat dummy = src.clone();
+	for(int i = 0; i < src.rows; i++){
+		state = NO_FILL;
+		for(int j = 0; j < src.cols; j++){
+			switch(state){
+				case NO_FILL:
+					if(src.at<char>(i,j) != 0){
+						state = EDGE_FOUND;
+					}
+					break;
+				case EDGE_FOUND:
+					if(src.at<char>(i,j) == 0){
+						dummy.at<char>(i,j) = 255;
+						state = FILLING;
+					}
+					break;
+				case FILLING:
+					if(src.at<char>(i,j) == 0){
+						dummy.at<char>(i,j) = 255;
+					}
+					else{
+						state = EDGE_FOUND;
+						dummy.row(i).copyTo(output.row(i));
+					}
+					break;
+			}
+		}
+	}
+	dst = output.clone();
 }
