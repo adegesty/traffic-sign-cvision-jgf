@@ -42,7 +42,10 @@ int main(int argc, char** argv){
 	for(unsigned int i = 0; i < regions.size(); i++){
 		regions[i].print(image);		
 	}
-	imshow("hei", image);
+	imshow("Region demo", image);
+
+	imwrite("region_output.jpg", image);
+
 	waitKey(0);
 
 	return 0;

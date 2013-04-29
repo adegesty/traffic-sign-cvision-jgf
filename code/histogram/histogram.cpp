@@ -153,7 +153,6 @@ void Histogram::get_peaks(vector<Peak> *peaks, int color, unsigned int n_peaks =
 void Histogram::generate_histogram()
 {
 	//Split the image
-	//TODO: Gjør dette med mixChannels
 	vector<Mat> bgr_planes;
 	split(src, bgr_planes);
 	
@@ -186,7 +185,6 @@ void Histogram::smooth_histogram()
 	if(blue)
 	{
 		for(int i = 0; i < b_hist.rows; i++){
-			//Motherfucking grenseverdier
 			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
 			int j_upper = (i <= b_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : b_hist.rows-i);
 
@@ -200,7 +198,6 @@ void Histogram::smooth_histogram()
 	if(green)
 	{
 		for(int i = 0; i < g_hist.rows; i++){
-			//Motherfucking grenseverdier
 			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
 			int j_upper = (i <= g_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : g_hist.rows-i);
 
@@ -214,7 +211,6 @@ void Histogram::smooth_histogram()
 	if(red)
 	{
 		for(int i = 0; i < r_hist.rows; i++){
-			//Motherfucking grenseverdier
 			int j_lower = (i >= smoothing_filter_size/2 ? -(smoothing_filter_size/2) : 0);
 			int j_upper = (i <= r_hist.rows - smoothing_filter_size/2 ? smoothing_filter_size /2 : r_hist.rows-i);
 

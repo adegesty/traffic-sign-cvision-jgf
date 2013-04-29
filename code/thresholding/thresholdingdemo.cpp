@@ -38,6 +38,7 @@ int main(int argc, char** argv){
 	imshow("Thresholing demo", image);
 
 	
+	imwrite("threshold_output.jpg", image);
 	waitKey(0);
 
 	return 0;

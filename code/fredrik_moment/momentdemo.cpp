@@ -35,7 +35,6 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
-	//threshold(image, image, 128, 255, THRESH_BINARY);
 	get_pure_color(image, image, RED);
 	vector<Region> regions = find_regions(image);
 	cout << "number of regions: " << regions.size() << endl;

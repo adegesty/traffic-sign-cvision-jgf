@@ -12,6 +12,8 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+#include <string>
+#include <stdio.h>
 
 #include "histogram.h"
 
@@ -76,7 +78,9 @@ int main( int argc, char** argv )
 	
 		//Show images
 		imshow("Source image", src);
+		imwrite("histogram.jpg", hist_with_current_peak);
 		imshow("Histogram", hist_with_current_peak);
+		imwrite("hist_thresh.jpg", thresholded);
 		imshow("Threshold", thresholded);
 		waitKey(0);
 	}
