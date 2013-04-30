@@ -1,0 +1,11 @@
+All the code uses OpenCV 2.4
+
+The main program is in trafficsignapp
+
+The other directories contain single modules consisting of a .cpp and a .h file. They also contain a simple demoprogram that shows what the module does. To compile the different programs, makefiles can be found in each directory. These are not guaranteed to work if OpenCV is set up in a non-standard way on your computer. What you may have to change are the paths to the libraries (The -I argument in the CFLAGS and the -L argument in the LFLAGS).
+
+All programs are set to take a default picture as input if no argument is given. Alternatively you can give a specified image as argument. For example:
+
+	./thresholding ../../example_images/berg_skilt_2.jpg
+
+The folder example_images has a lot of images. Not all work with every program as some expect a black and white image and some expect a color image. The easiest way to find out is to check the *demo.cpp file of each particular program.
