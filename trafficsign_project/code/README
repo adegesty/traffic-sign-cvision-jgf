@@ -8,4 +8,10 @@ All programs are set to take a default picture as input if no argument is given.
 
 	./thresholding ../../example_images/berg_skilt_2.jpg
 
+The main program trafficsignapp can use a camera as input. Just use the camera number as argument. It can also use an image.
+
+	./trafficsignapp 0
+
+Will start the program with camera 0 on your computer
+
 The folder example_images has a lot of images. Not all work with every program as some expect a black and white image and some expect a color image. The easiest way to find out is to check the *demo.cpp file of each particular program.
