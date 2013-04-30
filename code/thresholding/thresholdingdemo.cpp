@@ -33,12 +33,13 @@ int main(int argc, char** argv){
 		return -1;
 	}
 	
+	//Produce an image where the red parts of the original image white
+	//and the rest black
 	get_pure_color(image, image, RED);
 
 	imshow("Thresholing demo", image);
-
-	
 	imwrite("threshold_output.jpg", image);
+
 	waitKey(0);
 
 	return 0;

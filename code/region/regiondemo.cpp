@@ -1,8 +1,12 @@
 /*
- * thresholding.cpp
+ * regiondemo.cpp
  *
- *  Created on: Apr 5 2013
- *      Author: fredrik
+ * This program demonstrates the region detection
+ *  algorithm. It takes a greyscale image,
+ *  finds each continuous region, and marks them with a
+ *  square on the output picture. It also prints the
+ *  total number of regions.
+ *  
  */
 
 #include <opencv2/opencv.hpp>
@@ -33,17 +37,20 @@ int main(int argc, char** argv){
 		return -1;
 	}
 
+	//Make the image binary
 	threshold(image, image, 128, 255, THRESH_BINARY);
 
+	//Find all regions
 	vector<Region> regions = find_regions(image);
-	
 	cout << "number of regions: " << regions.size() << endl;
 	
+	//Mark each region
 	for(unsigned int i = 0; i < regions.size(); i++){
 		regions[i].print(image);		
 	}
-	imshow("Region demo", image);
 
+	//Show the image
+	imshow("Region demo", image);
 	imwrite("region_output.jpg", image);
 
 	waitKey(0);

@@ -1,8 +1,9 @@
 /*
- * thresholding.cpp
+ * trafficsignapp.cpp
  *
- *  Created on: Apr 5 2013
- *      Author: fredrik
+ * This progam combines all the modules, and allows
+ *  the user to process the stream of a webcam or a still image.
+ * 
  */
 
 #include <opencv2/opencv.hpp>
@@ -12,7 +13,7 @@
 
 #include "../thresholding/thresholding.h"
 #include "../region/region.h"
-#include "../fredrik_moment/moment.h"
+#include "../moment/moment.h"
 
 using namespace cv;
 using namespace std;
@@ -33,7 +34,7 @@ void process_frame(const Mat &src, Mat &dst){
 		Mat current_region = src(Range(regions[i].y_upper, regions[i].y_lower), Range(regions[i].x_leftmost, regions[i].x_rightmost));
 		
 		//Fill the shape. This works for most noncircular shapes also
-		fill_circle(current_region, current_region);
+		fill_shape(current_region, current_region);
 		
 		//Calculate invariance for the shape, and print the numbers describing the shape
 		double invariance = get_invariance(current_region);
@@ -52,17 +53,7 @@ int main(int argc, char** argv){
 		cout << "\t\"" << argv[0] << " camera_number\" to start a stream from that camera" << endl; 
 		cout << "\t\"" << argv[0] << " file_name \" to process a single image" << endl; 
 		return 1;
-/*		Mat image;
-		image = imread("../../example_images/shapes.jpg", CV_LOAD_IMAGE_COLOR);
-		//Check for valid input
-		if(!image.data){ 
-			cout <<  "Could not open or find the image" << endl;
-			return -1;	
-		}
-		process_frame(image, image);
-		imshow("Traffic sign detector", image);
-		waitKey(0);
-*/	}
+	}
 	else if(strlen(argv[1]) == 1){//Start camera. Just give device number as argument
 		
 		VideoCapture cap(atoi(argv[1]));

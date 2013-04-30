@@ -1,14 +1,14 @@
 #include <opencv2/opencv.hpp>
 #include <cmath>
 #include "region.h"
+
 using namespace cv;
+
+
 
 Region::Region(int _label){
 	label = _label;
 }
-
-
-
 
 void Region::print(Mat& dest){
 	line(dest, Point(x_leftmost, y_upper), Point(x_rightmost, y_upper), Scalar(255,255,255), 1, 8, 0);

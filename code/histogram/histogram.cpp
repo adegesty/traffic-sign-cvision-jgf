@@ -20,6 +20,7 @@ void Peak::draw_peak(Mat& img, int hist_size)
 
 
 }
+
 Histogram::Histogram(const Mat& _src, int _hist_size, int _hist_width, int _hist_height, int colors, 
 			  int _smoothing_filter_size)
 {
@@ -70,7 +71,7 @@ void Histogram::get_peaks(vector<Peak> *peaks, int color, unsigned int n_peaks =
 	Mat hist;
 	switch(color){
 		//These checks should be done with exeption-throwing, 
-		//but since its only for out project its not so important
+		//but since its only for our project its not so important
 		case BLUE:
 			if(!blue){
 				return;

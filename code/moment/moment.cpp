@@ -77,9 +77,6 @@ double get_ellipticity(double invariance){
 
 	return (perfect_ellipse_invariance)*(1/invariance);
 }
-/*double get_rectangularity(double invariance){
-
-}*/
 
 double get_triangularity(double invariance){
 	
@@ -101,7 +98,7 @@ double get_scale_inv(const Mat& src){
 	return ((mu_20+mu_02)/pow(mu_00,2));
 }
 
-void fill_circle(const Mat& src, Mat& dst){
+void fill_shape(const Mat& src, Mat& dst){
 	
 	enum fill_state {
 		NO_FILL,

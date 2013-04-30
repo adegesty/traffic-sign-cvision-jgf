@@ -5,7 +5,7 @@ CFLAGS = -g -Wall -MMD -I/usr/local/include/opencv
 LDFLAGS = -g -L/usr/local/lib -lopencv_core -lopencv_imgproc -lopencv_highgui
 
 # list of sources
-SOURCES = $(shell find  -name "*.cpp") ../thresholding/thresholding.cpp ../region/region.cpp ../fredrik_moment/moment.cpp
+SOURCES = $(shell find  -name "*.cpp") ../thresholding/thresholding.cpp ../region/region.cpp ../moment/moment.cpp
 
 # Program executable file name.
 TARGET = trafficsignapp

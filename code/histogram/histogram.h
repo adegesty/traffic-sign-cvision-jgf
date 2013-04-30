@@ -41,7 +41,8 @@ class Histogram
 	public:
 		Histogram(const Mat& _src, int _hist_size, int _hist_width, int _hist_height, int colors, 
 			  int _smoothing_filter_size);
-	
+		
+		//Draws the histogram on the argument image;
 		void draw_histogram(Mat& dst);
 		
 		//Puts the n_peaks highest peaks of the color histogram in the peaks vector
@@ -64,7 +65,7 @@ class Histogram
 		int hist_height;
 		int bin_width;
 
-		//If this i 0, there is no smoothing
+		//The size of the smoothing filter. If this i 0, there is no smoothing
 		int smoothing_filter_size;
 
 		//Weather or not the different channels are used

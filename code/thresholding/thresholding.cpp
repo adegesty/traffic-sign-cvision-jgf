@@ -41,26 +41,23 @@ void get_pure_color(const Mat &src, Mat &dst, int color){
 	Mat pureColor(src.rows, src.cols, CV_8UC1);
 	pureColor = color_channel - grey;
 
-	//Do the thresholding
 	Mat thresholded(src.rows, src.cols, CV_8UC1);
-
-	//adaptiveThreshold(pureRed, thresholded, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, (pureRed.cols % 2 ? pureRed.cols : pureRed.cols - 1), -25);
+	
+	//Calculate the threshold
 	double thresholdValue;	
-	//thresholdValue = mean(pureRed)[0]*4;
 	minMaxLoc(pureColor, NULL, &thresholdValue);
 	thresholdValue *= 0.65;
 
+	//Do the actual thresholding
 	threshold(pureColor, thresholded, thresholdValue, 255, THRESH_BINARY);
 
-	Mat smoothImage(src.rows, src.cols, CV_8UC1);
-
-	//shapeSmoothing(thresholded,smoothImage);
-//imwrite("../../example_images/images_circles/thresholded3.jpg",thresholded);
 
 	dst =  thresholded.clone();
 }
 
 
+//This function was implemented and tested, but did not yield 
+//satisfying results and was hence not used.
 void shapeSmoothing(const Mat& src, Mat& dest){
 
 	Mat dilation_image;	
