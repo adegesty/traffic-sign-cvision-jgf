@@ -1,0 +1,1 @@
+School project about real-time detection and identification of traffic signs in opencv.
